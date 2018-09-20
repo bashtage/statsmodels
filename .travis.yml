@@ -103,6 +103,15 @@ notifications:
     on_success: always
 
 before_install:
+  # Skip build if the commit message contains [skip travis] or [travis skip]
+  - COMMIT_MESSAGE=${TRAVIS_COMMIT_MESSAGE}
+  - PR_COMMIT_MESSAGE=$(git show -s $TRAVIS_COMMIT_RANGE | awk 'BEGIN{count=0}{if ($1=="Author:") count++; if (count==1) print $0}')
+  - echo $COMMIT_MESSAGE
+  - echo $PR_COMMIT_MESSAGE
+  - echo $TRAVIS_PULL_REQUEST
+  - if [[ $TRAVIS_PULL_REQUEST != false ]]; then echo "In a PR"; COMMIT_MESSAGE=$(git show -s $TRAVIS_COMMIT_RANGE | awk 'BEGIN{count=0}{if ($1=="Author:") count++; if (count==1) print $0}'); fi
+  - if echo "$COMMIT_MESSAGE" | grep -E '\[(skip travis|travis skip)\]'; then exit 0 ; fi
+  - exit 1
   # Ensure latest tags are available
   - git fetch --tags
   # Show information about CPU running job to understand BLAS issues
