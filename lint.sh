@@ -49,12 +49,17 @@ if [ "$LINT" == true ]; then
     fi
 
     # Tests any new python files
-    git fetch --unshallow --quiet
-    git config remote.origin.fetch "+refs/heads/*:refs/remotes/origin/*"
-    git fetch origin --quiet
+    if [ -f $(git rev-parse --git-dir)/shallow ]; then
+        # Unshallow only when required, e.g., on CI
+        echo Repository is shallow
+        git fetch --unshallow --quiet
+        git config remote.origin.fetch "+refs/heads/*:refs/remotes/origin/*"
+        git fetch origin --quiet
+    fi
     NEW_FILES=$(git diff origin/master --name-status -u -- "*.py" | grep ^A | cut -c 3- | paste -sd " " -)
     if [ -n "$NEW_FILES" ]; then
         echo "Linting newly added files with strict rules"
+        echo "New files: " $NEW_FILES
         flake8 --isolated $(eval echo $NEW_FILES)
         if [ $? -ne "0" ]; then
             echo "New files failed linting."
