@@ -120,7 +120,7 @@ for member in members:
     if not member[0]:
         continue
     if member[0][0] in string.ascii_uppercase:
-        if not type(member[1]) is type:
+        if type(member[1]) is not type:
             continue
         name = str(member[1]).split("'")[1]
         if not name.startswith("statsmodels."):

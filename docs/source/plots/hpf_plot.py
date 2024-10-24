@@ -1,6 +1,5 @@
 from load_macrodata import dta
 import matplotlib.pyplot as plt
-import pandas as pd
 
 import statsmodels.api as sm
 

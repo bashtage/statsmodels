@@ -11,7 +11,6 @@ Author: Padarn Wilson
 
 
 import matplotlib.pyplot as plt
-import numpy as np
 
 import statsmodels.api as sm
 
