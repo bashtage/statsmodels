@@ -340,7 +340,6 @@ exogenous variables.  Got length %s" % len(sys))
         wexog = []
         indep_endog = self._indep_endog # this has the col mapping
 #        fullexog = self.fullexog
-        instruments = self.instruments
         for eq in range(self._M): # need to go through all equations regardless
             instr_eq = Y.get(eq, None) # Y has the eq to ind endog array map
             newRHS = self.exog[eq].copy()

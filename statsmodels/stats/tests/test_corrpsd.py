@@ -455,7 +455,7 @@ class Test_Factor:
         X = np.random.normal(size=(2000,10))
         tcor = corr_thresholded(X, 0.2, max_elt=4e6)
         t2 = datetime.datetime.now()
-        ss = (t2-t1).seconds
+        (t2-t1).seconds
 
         fcor = np.corrcoef(X)
         fcor *= (np.abs(fcor) >= 0.2)

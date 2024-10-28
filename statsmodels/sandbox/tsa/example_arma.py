@@ -351,7 +351,7 @@ def pltxcorr(self, x, y, normed=True, detrend=detrend_none,
         b = self.axhline(**kwargs)
         kwargs.setdefault('marker', 'o')
         kwargs.setdefault('linestyle', 'None')
-        d = self.plot(lags, c, **kwargs)
+        self.plot(lags, c, **kwargs)
     else:
 
         kwargs.setdefault('marker', 'o')

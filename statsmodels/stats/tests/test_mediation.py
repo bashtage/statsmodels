@@ -122,7 +122,7 @@ def test_framing_example_moderator():
 
     # Just a smoke test
     np.random.seed(4231)
-    med_rslt = med.fit(method='parametric', n_rep=100)
+    med.fit(method='parametric', n_rep=100)
 
 
 @pytest.mark.slow

@@ -77,7 +77,8 @@ def check_cont_basic():
         print(distname)
         #print 'stats ', m,v,s,k
         expect = distfn.expect
-        expect = lambda *args, **kwds : expect_v2(distfn, *args, **kwds)
+        def expect(*args, **kwds):
+            return expect_v2(distfn, *args, **kwds)
 
         special_kwds = specialcases.get(distname, {})
         mnc0 = expect(mom_nc0, args=distargs, **special_kwds)
@@ -122,15 +123,15 @@ def nct_kurt_bug():
     c1=np.array([1.08372])
     c2=np.array([.0755460, 1.25000])
     c3 = np.array([.0297802, .580566])
-    c4 = np.array([0.0425458, 1.17491, 6.25])
+    np.array([0.0425458, 1.17491, 6.25])
 
     #calculation for df=10, for arbitrary nc
     nc = 1
     mc1 = c1.item()
     mc2 = (c2*nc**np.array([2,0])).sum()
     mc3 = (c3*nc**np.array([3,1])).sum()
-    mc4 = c4=np.array([0.0425458, 1.17491, 6.25])
-    mvsk_nc = mc2mvsk((mc1,mc2,mc3,mc4))
+    mc4 = np.array([0.0425458, 1.17491, 6.25])
+    mc2mvsk((mc1,mc2,mc3,mc4))
 
 if __name__ == '__main__':
 

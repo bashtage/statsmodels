@@ -286,20 +286,19 @@ class Heston:
         pass
 
     def simulate(self, m, kappa, eta,lambd,r, ts, nrepl,tratio=1.):
-        T = ts[-1]
+        ts[-1]
         nobs = len(ts)
         dt = np.zeros(nobs) #/tratio
         dt[0] = ts[0]-0
         dt[1:] = np.diff(ts)
 
-        DXs = np.zeros((nrepl,nobs))
+        np.zeros((nrepl,nobs))
 
         dB_1 = np.sqrt(dt) * np.random.randn(nrepl,nobs)
         dB_2u = np.sqrt(dt) * np.random.randn(nrepl,nobs)
         dB_2 = r*dB_1 + np.sqrt(1-r**2)*dB_2u
 
         vt = eta*np.ones(nrepl)
-        v=[]
         dXs = np.zeros((nrepl,nobs))
         vts = np.zeros((nrepl,nobs))
         for t in range(nobs):
@@ -321,13 +320,13 @@ class CIRSubordinatedBrownian:
         pass
 
     def simulate(self, m, kappa, T_dot,lambd,sigma, ts, nrepl):
-        T = ts[-1]
+        ts[-1]
         nobs = len(ts)
         dtarr = np.zeros(nobs) #/tratio
         dtarr[0] = ts[0]-0
         dtarr[1:] = np.diff(ts)
 
-        DXs = np.zeros((nrepl,nobs))
+        np.zeros((nrepl,nobs))
 
         dB = np.sqrt(dtarr) * np.random.randn(nrepl,nobs)
 

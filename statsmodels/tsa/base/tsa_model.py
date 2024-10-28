@@ -633,7 +633,6 @@ class TimeSeriesModel(base.LikelihoodModel):
         # Get attributes of the index
         has_index = index is not None
         date_index = isinstance(index, (DatetimeIndex, PeriodIndex))
-        period_index = isinstance(index, PeriodIndex)
         int_index = is_int_index(index)
         range_index = isinstance(index, RangeIndex)
         has_freq = index.freq is not None if date_index else None

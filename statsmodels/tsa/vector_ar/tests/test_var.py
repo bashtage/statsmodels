@@ -251,16 +251,11 @@ class CheckFEVD:
     def test_fevd_summary(self):
         self.fevd.summary()
 
-    @pytest.mark.xfail(
-        reason="FEVD.cov() is not implemented",
-        raises=NotImplementedError,
-        strict=True,
-    )
     def test_fevd_cov(self):
         # test does not crash
         # not implemented
-        covs = self.fevd.cov()
-        raise NotImplementedError
+        with pytest.raises(NotImplementedError):
+            self.fevd.cov()
 
 
 class TestVARResults(CheckIRF, CheckFEVD):
@@ -285,7 +280,7 @@ class TestVARResults(CheckIRF, CheckFEVD):
         # make sure this works with no names
         ndarr = self.data.view((float, 3), type=np.ndarray)
         model = VAR(ndarr)
-        res = model.fit(self.p)
+        model.fit(self.p)
 
     def test_names(self):
         assert_equal(self.model.endog_names, self.ref.names)
@@ -309,8 +304,8 @@ class TestVARResults(CheckIRF, CheckFEVD):
     @pytest.mark.smoke
     def test_repr(self):
         # just want this to work
-        foo = str(self.res)
-        bar = repr(self.res)
+        str(self.res)
+        repr(self.res)
 
     def test_params(self):
         assert_almost_equal(self.res.params, self.ref.params, DECIMAL_3)
@@ -334,7 +329,7 @@ class TestVARResults(CheckIRF, CheckFEVD):
 
     @pytest.mark.smoke
     def test_summary(self):
-        summ = self.res.summary()
+        self.res.summary()
 
     def test_detsig(self):
         assert_almost_equal(self.res.detomega, self.ref.detomega)
@@ -355,7 +350,7 @@ class TestVARResults(CheckIRF, CheckFEVD):
         ics = ["aic", "fpe", "hqic", "bic"]
 
         for ic in ics:
-            res = self.model.fit(maxlags=10, ic=ic, verbose=True)
+            self.model.fit(maxlags=10, ic=ic, verbose=True)
 
         with pytest.raises(Exception):
             self.model.fit(ic="foo")
@@ -406,8 +401,8 @@ class TestVARResults(CheckIRF, CheckFEVD):
 
     @pytest.mark.smoke
     def test_select_order(self):
-        result = self.model.fit(10, ic="aic", verbose=True)
-        result = self.model.fit(10, ic="fpe", verbose=True)
+        self.model.fit(10, ic="aic", verbose=True)
+        self.model.fit(10, ic="fpe", verbose=True)
 
         # bug
         model = VAR(self.model.endog)
@@ -447,7 +442,7 @@ class TestVARResults(CheckIRF, CheckFEVD):
 
     @pytest.mark.smoke
     def test_acorr(self):
-        acorrs = self.res.acorr(10)
+        self.res.acorr(10)
 
     @pytest.mark.smoke
     def test_forecast(self):
@@ -635,7 +630,7 @@ class TestVARResultsLutkepohl:
 
     def test_lr_effect_stderr(self):
         stderr = self.irf.lr_effect_stderr(orth=False)
-        orth_stderr = self.irf.lr_effect_stderr(orth=True)
+        self.irf.lr_effect_stderr(orth=True)
         assert_almost_equal(np.round(stderr, 3), self.lut.lr_stderr)
 
 
@@ -678,11 +673,11 @@ def test_var_trend():
 
     model = VAR(data)
     results = model.fit(4)  # , trend = 'c')
-    irf = results.irf(10)
+    results.irf(10)
 
     data_nc = data - data.mean(0)
     model_nc = VAR(data_nc)
-    results_nc = model_nc.fit(4, trend="n")
+    model_nc.fit(4, trend="n")
     with pytest.raises(ValueError):
         model.fit(4, trend="t")
 
@@ -767,7 +762,7 @@ class TestVARExtras:
         assert_equal(res0.k_exog, 1)
         assert_equal(res0.k_ar, 2)
 
-        irf = res0.irf()
+        res0.irf()
 
     @pytest.mark.matplotlib
     def test_process_plotting(self, close_figures):
@@ -991,7 +986,7 @@ def test_irf_err_bands():
     model = VAR(data)
     results = model.fit(maxlags=2)
     irf = results.irf()
-    bands_sz1 = irf.err_band_sz1()
-    bands_sz2 = irf.err_band_sz2()
-    bands_sz3 = irf.err_band_sz3()
-    bands_mc = irf.errband_mc()
+    irf.err_band_sz1()
+    irf.err_band_sz2()
+    irf.err_band_sz3()
+    irf.errband_mc()

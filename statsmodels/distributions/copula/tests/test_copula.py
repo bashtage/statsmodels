@@ -188,7 +188,9 @@ extrali = [
 def test_ev_copula(case):
     # check ev copulas, cdf and transform against R `evd` package
     ev_tr, v1, v2, args, res1 = case
-    res = copula_bv_ev([v1, v2], ev_tr, args=args)
+    # Converted to smoke test
+    copula_bv_ev([v1, v2], ev_tr, args=args)
+    # res = copula_bv_ev([v1, v2], ev_tr, args=args)
     # assert_allclose(res, res1, rtol=1e-13)
 
     # check derivatives of dependence function

@@ -124,7 +124,8 @@ class Overdispersed_simulator(GEE_simulator):
         f = np.sum(self.params**2)
         u,s,vt = np.linalg.svd(np.eye(len(self.params)) -
                                np.outer(self.params, self.params) / f)
-        params0 = u[:,np.flatnonzero(s > 1e-6)]
+        # Disabled by lint check as unused
+        # params0 = u[:,np.flatnonzero(s > 1e-6)]
 
         for i in range(self.ngroups):
 

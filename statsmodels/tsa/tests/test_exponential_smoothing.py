@@ -1033,7 +1033,7 @@ def test_one_step_ahead(setup_model):
     pred2 = res.get_prediction(start=model2.nobs, end=model2.nobs + 1,
                                simulate_repetitions=2)
     df1 = pred1.summary_frame(alpha=0.05)
-    df2 = pred1.summary_frame(alpha=0.05)
+    df2 = pred2.summary_frame(alpha=0.05)
     assert_allclose(df1.iloc[0, 0], df2.iloc[0, 0])
 
 

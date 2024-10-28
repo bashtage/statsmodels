@@ -356,11 +356,11 @@ class TestPHReg:
 
         dist = rslt.get_distribution()
 
-        fitted_means = dist.mean()
-        true_means = elin_pred
-        fitted_var = dist.var()
-        fitted_sd = dist.std()
-        sample = dist.rvs()
+        # Smoke tests
+        dist.mean()
+        dist.var()
+        dist.std()
+        dist.rvs()
 
     def test_fit_regularized(self):
 

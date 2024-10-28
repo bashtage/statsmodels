@@ -2111,7 +2111,7 @@ class VARResults(VARProcess):
         caused = [self.names[c] for c in caused_ind]
 
         # Note: JMulTi seems to be using k_ar+1 instead of k_ar
-        k, t, p = self.neqs, self.nobs, self.k_ar
+        k, t = self.neqs, self.nobs
 
         num_restr = len(causing) * len(caused)  # called N in Lütkepohl
 

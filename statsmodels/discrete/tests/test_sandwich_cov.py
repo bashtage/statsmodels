@@ -120,17 +120,17 @@ class TestPoissonCluGeneric(CheckCountRobustMixin):
     def setup_class(cls):
         cls.res2 = results_st.results_poisson_clu
         mod = smd.Poisson(endog, exog)
-        cls.res1 = res1 = mod.fit(disp=False)
+        cls.res1 = mod.fit(disp=False)
 
         debug = False
         if debug:
             # for debugging
             cls.bse_nonrobust = cls.res1.bse.copy()
-            cls.res1 = res1 = mod.fit(disp=False)
+            cls.res1 = mod.fit(disp=False)
             cls.get_robust_clu()
             cls.res3 = cls.res1
             cls.bse_rob3 = cls.bse_rob.copy()
-            cls.res1 = res1 = mod.fit(disp=False)
+            cls.res1 = mod.fit(disp=False)
 
         from statsmodels.base.covtype import get_robustcov_results
 
@@ -253,7 +253,7 @@ class TestPoissonCluExposureGeneric(CheckCountRobustMixin):
     def setup_class(cls):
         cls.res2 = results_st.results_poisson_exposure_clu #nonrobust
         mod = smd.Poisson(endog, exog, exposure=exposure)
-        cls.res1 = res1 = mod.fit(disp=False)
+        cls.res1 = mod.fit(disp=False)
 
         from statsmodels.base.covtype import get_robustcov_results
 
@@ -286,7 +286,7 @@ class TestGLMPoissonCluGeneric(CheckCountRobustMixin):
     def setup_class(cls):
         cls.res2 = results_st.results_poisson_clu
         mod = GLM(endog, exog, family=families.Poisson())
-        cls.res1 = res1 = mod.fit()
+        cls.res1 = mod.fit()
 
         get_robustcov_results(cls.res1._results, 'cluster',
                                                   groups=group,
@@ -321,7 +321,7 @@ class TestGLMPoissonCluFit(CheckCountRobustMixin):
     def setup_class(cls):
         cls.res2 = results_st.results_poisson_clu
         mod = GLM(endog, exog, family=families.Poisson())
-        cls.res1 = res1 = mod.fit(cov_type='cluster',
+        cls.res1 = mod.fit(cov_type='cluster',
                                   cov_kwds=dict(groups=group,
                                                 use_correction=True,
                                                 df_correction=True),  #TODO has no effect
@@ -391,7 +391,7 @@ class TestNegbinCluGeneric(CheckCountRobustMixin):
     def setup_class(cls):
         cls.res2 = results_st.results_negbin_clu
         mod = smd.NegativeBinomial(endog, exog)
-        cls.res1 = res1 = mod.fit(disp=False, gtol=1e-7)
+        cls.res1 = mod.fit(disp=False, gtol=1e-7)
 
         get_robustcov_results(cls.res1._results, 'cluster',
                                                   groups=group,
@@ -410,7 +410,7 @@ class TestNegbinCluFit(CheckCountRobustMixin):
     def setup_class(cls):
         cls.res2 = results_st.results_negbin_clu
         mod = smd.NegativeBinomial(endog, exog)
-        cls.res1 = res1 = mod.fit(disp=False, cov_type='cluster',
+        cls.res1 = mod.fit(disp=False, cov_type='cluster',
                                   cov_kwds=dict(groups=group,
                                                 use_correction=True,
                                                 df_correction=True),  #TODO has no effect
@@ -427,7 +427,7 @@ class TestNegbinCluExposureFit(CheckCountRobustMixin):
     def setup_class(cls):
         cls.res2 = results_st.results_negbin_exposure_clu #nonrobust
         mod = smd.NegativeBinomial(endog, exog, exposure=exposure)
-        cls.res1 = res1 = mod.fit(disp=False, cov_type='cluster',
+        cls.res1 = mod.fit(disp=False, cov_type='cluster',
                                   cov_kwds=dict(groups=group,
                                                 use_correction=True,
                                                 df_correction=True),  #TODO has no effect
@@ -737,7 +737,7 @@ class TestGLMGaussHACUniform2(TestGLMGaussHACUniform):
         # check kernel as string
         mod2 = OLS(endog, exog)
         kwds2 = {'kernel': 'uniform', 'maxlags': 2}
-        cls.res2 = mod2.fit(cov_type='HAC', cov_kwds=kwds)
+        cls.res2 = mod2.fit(cov_type='HAC', cov_kwds=kwds2)
 
 
 class TestGLMGaussHACPanel(CheckDiscreteGLM):

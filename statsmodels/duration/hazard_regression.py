@@ -683,6 +683,7 @@ class PHReg(model.LikelihoodModel):
         for stx in range(surv.nstrat):
 
             # Indices of subjects in the stratum
+            # TODO: Check why this is never used
             strat_ix = surv.stratum_rows[stx]
 
             # Unique failure times in the stratum
@@ -736,6 +737,7 @@ class PHReg(model.LikelihoodModel):
         for stx in range(surv.nstrat):
 
             # Indices of cases in the stratum
+            # TODO: Check why this is never used
             strat_ix = surv.stratum_rows[stx]
 
             # exog and linear predictor of the stratum

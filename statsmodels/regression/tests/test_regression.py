@@ -832,7 +832,7 @@ class TestNonFit:
         cls.ols_model = OLS(data.endog, data.exog)
 
     def test_df_resid(self):
-        df_resid = self.endog.shape[0] - self.exog.shape[1]
+        self.endog.shape[0] - self.exog.shape[1]
         assert_equal(self.ols_model.df_resid, 9)
 
 

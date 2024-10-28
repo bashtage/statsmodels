@@ -800,7 +800,8 @@ class MultinomialModel(BinaryModel):
 
         if callback is None:
             # placeholder until check_perfect_pred
-            callback = lambda x, *args : None
+            def callback(x, *args):
+                return None
         # skip calling super to handle results from LikelihoodModel
         mnfit = base.LikelihoodModel.fit(self, start_params = start_params,
                 method=method, maxiter=maxiter, full_output=full_output,
@@ -1929,7 +1930,8 @@ class GeneralizedPoisson(CountModel):
 
         if callback is None:
             # work around perfect separation callback #3895
-            callback = lambda *x: x
+            def callback(*x):
+                return x
 
         mlefit = super().fit(start_params=start_params,
                              maxiter=maxiter,
@@ -3740,7 +3742,8 @@ class NegativeBinomial(CountModel):
 
         if callback is None:
             # work around perfect separation callback #3895
-            callback = lambda *x: x
+            def callback(*x):
+                return x
 
         mlefit = super().fit(start_params=start_params,
                              maxiter=maxiter, method=method, disp=disp,
@@ -4245,7 +4248,8 @@ class NegativeBinomialP(CountModel):
 
         if callback is None:
             # work around perfect separation callback #3895
-            callback = lambda *x: x
+            def callback(*x):
+                return x
 
         mlefit = super().fit(start_params=start_params,
                         maxiter=maxiter, method=method, disp=disp,

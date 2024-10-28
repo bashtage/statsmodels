@@ -337,9 +337,10 @@ def eff_mvmean(norm, k_vars):
 
     """
     k = k_vars  # shortcut
-    f_alpha = lambda d: norm.psi(d)**2 / k
-    f_beta = lambda d: ((1 - 1 / k) * norm.weights(d) +
-                        1 / k * norm.psi_deriv(d))
+    def f_alpha(d):
+        return norm.psi(d) ** 2 / k
+    def f_beta(d):
+        return (1 - 1 / k) * norm.weights(d) + 1 / k * norm.psi_deriv(d)
     alpha = stats.chi(k).expect(f_alpha)
     beta = stats.chi(k).expect(f_beta)
     return beta**2 / alpha, alpha, beta
@@ -381,8 +382,10 @@ def eff_mvshape(norm, k_vars):
     """
 
     k = k_vars  # shortcut
-    f_a = lambda d: k * (k + 2) * norm.psi(d)**2 * d**2
-    f_b = lambda d: norm.psi_deriv(d) * d**2 + (k + 1) * norm.psi(d) * d
+    def f_a(d):
+        return k * (k + 2) * norm.psi(d) ** 2 * d ** 2
+    def f_b(d):
+        return norm.psi_deriv(d) * d ** 2 + (k + 1) * norm.psi(d) * d
     a = stats.chi(k).expect(f_a)
     b = stats.chi(k).expect(f_b)
     return b**2 / a, a, b

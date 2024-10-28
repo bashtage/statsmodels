@@ -541,7 +541,8 @@ class TestGaussianInverse(CheckModelResultsMixin):
         nobs = 100
         x = np.arange(nobs)
         np.random.seed(54321)
-        y = 1.0 + 2.0 * x + x**2 + 0.1 * np.random.randn(nobs)
+        # Disabled by lint check as unused
+        # y = 1.0 + 2.0 * x + x**2 + 0.1 * np.random.randn(nobs)
         cls.X = np.c_[np.ones((nobs, 1)), x, x**2]
         cls.y_inv = (1.0 + 0.02 * x + 0.001 * x**2) ** -1 + 0.001 * np.random.randn(
             nobs
@@ -1361,7 +1362,8 @@ def test_summary():
         fa = sm.families.Gaussian()
         model = sm.GLM(endog, exog, family=fa)
         rslt = model.fit(method=method)
-        s = rslt.summary()
+        # Smoke test
+        rslt.summary()
 
 
 def check_score_hessian(results):

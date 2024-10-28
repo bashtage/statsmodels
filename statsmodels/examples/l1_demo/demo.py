@@ -310,7 +310,7 @@ def get_probit_endog(true_params, exog, noise_level):
     ### Create the probability of entering the different classes,
     ### given exog and true_params
     Xdotparams = sp.dot(exog, true_params)
-    noise = noise_level * sp.randn(*Xdotparams.shape)
+    noise_level * sp.randn(*Xdotparams.shape)
 
     ### Create the endog
     cdf = stats.norm._cdf(-Xdotparams)
