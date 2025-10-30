@@ -141,37 +141,37 @@ def test_screen_iterated():
 
 
 def test_glmpoisson_screening():
-
+    print(1)
     y, x, idx_nonzero_true, beta = _get_poisson_data()
     nobs = len(y)
-
+    print(2)
     xnames_true = ["var%4d" % ii for ii in idx_nonzero_true]
     xnames_true[0] = "const"
     parameters = pd.DataFrame(beta[idx_nonzero_true], index=xnames_true, columns=["true"])
-
+    print(3)
     xframe_true = pd.DataFrame(x[:, idx_nonzero_true], columns=xnames_true)
     res_oracle = GLMPenalized(y, xframe_true, family=family.Poisson()).fit()
     parameters["oracle"] = res_oracle.params
-
+    print(4)
     mod_initial = GLMPenalized(y, np.ones(nobs), family=family.Poisson())
-
+    print(5)
     screener = VariableScreening(mod_initial)
     exog_candidates = x[:, 1:]
     res_screen = screener.screen_exog(exog_candidates, maxiter=10)
-
+    print(6)
     assert_equal(np.sort(res_screen.idx_nonzero), idx_nonzero_true)
-
+    print(7)
     xnames = ["var%4d" % ii for ii in res_screen.idx_nonzero]
     xnames[0] = "const"
-
+    print(8)
     # smoke test
     res_screen.results_final.summary(xname=xnames)
     res_screen.results_pen.summary()
     assert_equal(res_screen.results_final.mle_retvals["converged"], True)
-
+    print(9)
     ps = pd.Series(res_screen.results_final.params, index=xnames, name="final")
     parameters = parameters.join(ps, how="outer")
-
+    print(10)
     assert_allclose(parameters["oracle"], parameters["final"], atol=5e-6)
 
 
