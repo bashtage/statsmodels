@@ -250,6 +250,15 @@ class RegressionModel(base.LikelihoodModel):
         self._df_model = None
         self._df_resid = None
         self.rank = None
+        # Populated by `fit`; declared here (rather than only appearing the
+        # first time `fit` runs) so the model's attribute set does not
+        # depend on whether/how it has been fit yet.
+        self.normalized_cov_params = None
+        self.wexog_singular_values = None
+        self.effects = None
+        # Only populated when fit(method="qr") is used.
+        self.exog_Q = None
+        self.exog_R = None
 
     @property
     def df_model(self):
@@ -365,40 +374,30 @@ class RegressionModel(base.LikelihoodModel):
         to solve the least squares minimization.
 
         """
+        # NOTE: pinv_wexog, normalized_cov_params, wexog_singular_values and
+        # rank are always recomputed from the current self.wexog (rather
+        # than cached based on whether they already exist), so the model's
+        # state after fit() depends only on the current data, never on
+        # which `method` a previous fit() call happened to use, and never
+        # goes stale if self.wexog changes between fit() calls (e.g. GLSAR
+        # and GLSHet's iterative re-whitening).
         if method == "pinv":
-            if not (
-                hasattr(self, "pinv_wexog")
-                and hasattr(self, "normalized_cov_params")
-                and hasattr(self, "rank")
-            ):
-
-                self.pinv_wexog, singular_values = pinv_extended(self.wexog)
-                self.normalized_cov_params = np.dot(
-                    self.pinv_wexog, np.transpose(self.pinv_wexog)
-                )
-
-                # Cache these singular values for use later.
-                self.wexog_singular_values = singular_values
-                self.rank = np.linalg.matrix_rank(np.diag(singular_values))
+            pinv_wexog, singular_values = pinv_extended(self.wexog)
+            self.pinv_wexog = pinv_wexog
+            self.normalized_cov_params = np.dot(
+                pinv_wexog, np.transpose(pinv_wexog)
+            )
+            self.wexog_singular_values = singular_values
+            self.rank = np.linalg.matrix_rank(np.diag(singular_values))
 
             beta = np.dot(self.pinv_wexog, self.wendog)
 
         elif method == "qr":
-            if not (
-                hasattr(self, "exog_Q")
-                and hasattr(self, "exog_R")
-                and hasattr(self, "normalized_cov_params")
-                and hasattr(self, "rank")
-            ):
-                Q, R = np.linalg.qr(self.wexog)
-                self.exog_Q, self.exog_R = Q, R
-                self.normalized_cov_params = np.linalg.inv(np.dot(R.T, R))
-
-                # Cache singular values from R.
-                self.wexog_singular_values = np.linalg.svd(R, 0, 0)
-                self.rank = np.linalg.matrix_rank(R)
-            else:
-                Q, R = self.exog_Q, self.exog_R
+            Q, R = np.linalg.qr(self.wexog)
+            self.exog_Q, self.exog_R = Q, R
+            self.normalized_cov_params = np.linalg.inv(np.dot(R.T, R))
+            self.wexog_singular_values = np.linalg.svd(R, 0, 0)
+            self.rank = np.linalg.matrix_rank(R)
             # Needed for some covariance estimators, see GH #8157
             self.pinv_wexog = np.linalg.pinv(self.wexog)
             # used in ANOVA
@@ -1022,6 +1021,13 @@ class OLS(WLS):
         if type(self) is OLS:
             self._check_kwargs(kwargs, ["offset"])
 
+        # Cache populated lazily by `_setup_score_hess`, used by `score` and
+        # `hessian`. Declared here so it always exists, rather than only
+        # appearing after `score`/`hessian` has been called once.
+        self._wendog_xprod = None
+        self._wexog_xprod = None
+        self._wexog_x_wendog = None
+
     def loglike(self, params, scale=None):
         """
         The likelihood function for the OLS model.
@@ -1100,7 +1106,7 @@ class OLS(WLS):
             The score vector.
 
         """
-        if not hasattr(self, "_wexog_xprod"):
+        if self._wexog_xprod is None:
             self._setup_score_hess()
 
         xtxb = np.dot(self._wexog_xprod, params)
@@ -1140,7 +1146,7 @@ class OLS(WLS):
             The Hessian matrix.
 
         """
-        if not hasattr(self, "_wexog_xprod"):
+        if self._wexog_xprod is None:
             self._setup_score_hess()
 
         xtxb = np.dot(self._wexog_xprod, params)
@@ -1440,8 +1446,6 @@ class GLSAR(GLS):
         i = -1  # need to initialize for maxiter < 1 (skip loop)
         history = {"params": [], "rho": [self.rho]}
         for i in range(maxiter - 1):
-            if hasattr(self, "pinv_wexog"):
-                del self.pinv_wexog
             self.initialize()
             results = self.fit()
             history["params"].append(results.params)
@@ -1460,8 +1464,6 @@ class GLSAR(GLS):
         # Use kwarg to insert history
         if not converged and maxiter > 0:
             # maxiter <= 0 just does OLS
-            if hasattr(self, "pinv_wexog"):
-                del self.pinv_wexog
             self.initialize()
 
         # if converged then this is a duplicate fit, because we did not
@@ -1751,13 +1753,18 @@ class RegressionResults(base.LikelihoodModelResults):
         super().__init__(model, params, normalized_cov_params, scale)
 
         self._cache = {}
-        if hasattr(model, "wexog_singular_values"):
-            self._wexog_singular_values = model.wexog_singular_values
-        else:
-            self._wexog_singular_values = None
+        self._wexog_singular_values = getattr(model, "wexog_singular_values", None)
 
         self.df_model = model.df_model
         self.df_resid = model.df_resid
+
+        # Populated (as a diagnostic side effect) by cov_HC0..cov_HC3,
+        # get_robustcov_results, and summary respectively. Declared here so
+        # they exist from construction instead of only appearing after one
+        # of those methods has been called.
+        self.het_scale = None
+        self.n_groups = None
+        self.diagn = None
 
         if cov_type == "nonrobust":
             self.cov_type = "nonrobust"

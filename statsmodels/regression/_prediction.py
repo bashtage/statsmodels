@@ -43,6 +43,9 @@ class PredictionResults:
         self.df = df
         self.var_resid = var_resid
         self.row_labels = row_labels
+        # Populated by `summary_frame`; declared here so it exists (as
+        # None) even before `summary_frame` has been called.
+        self.table = None
 
         if dist is None or dist == "norm":
             self.dist = stats.norm

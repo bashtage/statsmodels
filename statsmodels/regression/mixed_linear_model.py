@@ -752,6 +752,14 @@ class MixedLM(base.LikelihoodModel):
         self.reml = True
         self.fe_pen = None
         self.re_pen = None
+        self.cov_pen = None
+
+        # Populated by `fit`/`get_fe_params`; declared here so they exist
+        # (as sensible defaults) even before those methods have been
+        # called, rather than only appearing afterward.
+        self._freepat = None
+        self._cov_sing = 0
+        self._endex_li = None
 
         if isinstance(exog_vc, dict):
             warnings.warn(
@@ -1415,7 +1423,7 @@ class MixedLM(base.LikelihoodModel):
                 cov_re_inv = np.linalg.inv(cov_re)
 
         # Cache these quantities that do not change.
-        if not hasattr(self, "_endex_li"):
+        if self._endex_li is None:
             self._endex_li = []
             for group_ix, _ in enumerate(self.group_labels):
                 mat = np.concatenate(

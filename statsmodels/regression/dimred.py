@@ -15,6 +15,11 @@ class _DimReductionRegression(model.Model):
 
     def __init__(self, endog, exog, **kwargs):
         super().__init__(endog, exog, **kwargs)
+        # Populated by `_prep`; declared here so they exist (as None) even
+        # before `_prep`/`fit` has been called.
+        self.wexog = None
+        self._covxr = None
+        self._split_wexog = None
 
     def _prep(self, n_slice):
 
@@ -50,6 +55,18 @@ class SlicedInverseReg(_DimReductionRegression):
     KC Li (1991).  Sliced inverse regression for dimension reduction.
     JASA 86, 316-342.
     """
+
+    def __init__(self, endog, exog, **kwargs):
+        super().__init__(endog, exog, **kwargs)
+        # Populated by `fit_regularized`; declared here so they exist (as
+        # None) even before `fit_regularized` has been called.
+        self._covx = None
+        self._slice_means = None
+        self._slice_props = None
+        self.k_vars = None
+        self.n_slice = None
+        self.ndim = None
+        self.pen_mat = None
 
     def fit(self, slice_n=20, **kwargs):
         """

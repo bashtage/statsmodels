@@ -146,6 +146,11 @@ class GLSHet(WLS):
             self.link = lambda x: x  # no transformation
             self.linkinv = lambda x: x
 
+        # Populated by `iterative_fit`; declared here so they exist (as
+        # None) even before `iterative_fit` has been called.
+        self.history = None
+        self.results_old = None
+
         super(self.__class__, self).__init__(endog, exog, weights=weights)
 
     def iterative_fit(self, maxiter=3):
@@ -179,18 +184,11 @@ class GLSHet(WLS):
 
         Possible extension: stop iteration if the change in parameter
         estimates is smaller than some tolerance.
-
-        Repeated calls to iterative_fit will do one redundant pinv_wexog
-        calculation. Calling iterative_fit(maxiter) once does not do any
-        redundant recalculations (whitening or calculating pinv_wexog).
         """
         import collections
         self.history = collections.defaultdict(list)  # not really necessary
         res_resid = None  # if maxiter < 2 no updating
         for i in range(maxiter):
-            # pinv_wexog is cached
-            if hasattr(self, "pinv_wexog"):
-                del self.pinv_wexog
             # self.initialize()
             # print 'wls self',
             results = self.fit()
