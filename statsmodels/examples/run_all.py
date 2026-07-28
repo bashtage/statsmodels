@@ -8,7 +8,7 @@ uncomment plt.show() to show all plot windows
 
 """
 
-from statsmodels.compat.python import input, lzip
+from statsmodels.compat.python import lzip
 
 import matplotlib.pyplot as plt  # matplotlib is required for many examples
 

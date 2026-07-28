@@ -224,12 +224,7 @@ select = [
   "FAST",
   # pandas-vet
   "PD",
-  # flake8-use-pathlib: os.path is used throughout, but fewer than half
-  # the rule's codes actually fire here, so the category is selected with
-  # the failing codes carved out below (see ignore list) rather than
-  # listing the larger set of passing codes individually. A full
-  # os.path -> pathlib migration is a bigger undertaking than a config
-  # change.
+  # flake8-use-pathlib: fully clean as of the pth-fixes migration (PR #9988)
   "PTH",
   # pep8-naming: most of "N" fails on scientific/statistical variable
   # naming conventions (e.g. X, Y, N806 alone is 2000+ hits), so only the
@@ -243,8 +238,6 @@ select = [
   # 1300+ hits, so only the individually-clean rules are selected rather
   # than the whole category.
   "TRY400", "TRY401",
-  # flake8-use-pathlib
-  "PTH",
 ]
 
 # pydocstyle ("D") is intentionally NOT selected above. This project already
@@ -276,7 +269,7 @@ ignore = [
 
   ### Intentionally disabled
   # Counts below are from `ruff check statsmodels tools docs --select ALL`
-  # (this project's conformance scope), refreshed 2026-07-27.
+  # (this project's conformance scope), refreshed 2026-07-28.
   # Too many arguments to function call
   "PLR0913", # 645
   # Too many returns
@@ -302,7 +295,7 @@ ignore = [
   # Magic number
   "PLR2004", # 717
   # import-outside-toplevel
-  "PLC0415", # 853
+  "PLC0415", # 850
 
   ### TODO: Enable gradually
   # Too many uses of dict(...) instread of {...}
@@ -317,14 +310,11 @@ ignore = [
   "RUF005", # 138
   # mutable-class-default
   "RUF012", # 177
-  # repeated-equality-comparison
-  "PLR1714", # 27
 
-  ### New 2026-07-27 when enabling ASYNC, EXE, G, LOG, FURB, S, full ICN
   # assert is used pervasively outside of tests in this codebase (input
   # validation, invariant checks); not adopting flake8-bandit's blanket
   # objection to it
-  "S101", # 1669
+  "S101", # 1670
   # try/except/pass: mostly deliberate best-effort cleanup code
   "S110", # 5
   # pickle usage: needed for model persistence, a documented feature
@@ -338,13 +328,11 @@ ignore = [
   "S602", # 2
   "S603", # 2
 
-  ### New 2026-07-27 when enabling A, DTZ, PD, PTH
   # Variable/argument/import shadows a builtin name (e.g. `id`, `type`,
   # `filter`); common in this codebase's mathematical notation and not
   # worth a rename sweep
   "A001", # 35
   "A002", # 10
-  "A004", # 2
   # datetime()/datetime.now() without tzinfo; this project works with
   # naive timestamps throughout (dataset dates, log timestamps) and does
   # not need timezone-aware datetimes
@@ -359,24 +347,6 @@ ignore = [
   # .values instead of .to_numpy(): a pervasive, long-standing idiom
   # throughout this codebase, not worth a mechanical rewrite
   "PD011", # 308
-  # os.path used throughout instead of pathlib; a real modernization
-  # opportunity, but a bigger migration than a quick fix
-  "PTH100", # 107
-  "PTH103", # 4
-  "PTH106", # 1
-  "PTH107", # 6
-  "PTH110", # 13
-  "PTH111", # 1
-  "PTH112", # 1
-  "PTH113", # 1
-  "PTH118", # 237
-  "PTH119", # 1
-  "PTH120", # 123
-  "PTH122", # 4
-  "PTH123", # 89
-  "PTH204", # 4
-  "PTH207", # 6
-  "PTH208", # 3
 ]
 
 [tool.ruff.lint.isort]

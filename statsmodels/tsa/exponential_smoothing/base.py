@@ -532,7 +532,7 @@ class StateSpaceMLEResults(tsbase.TimeSeriesModelResults):
             raise ValueError("Cannot compute test statistic when standardized"
                              " forecast errors have not been computed.")
 
-        if method == "ljungbox" or method == "boxpierce":
+        if method in ("ljungbox", "boxpierce"):
             from statsmodels.stats.diagnostic import acorr_ljungbox
             if hasattr(self, "loglikelihood_burn"):
                 d = np.maximum(self.loglikelihood_burn, self.nobs_diffuse)

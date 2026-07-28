@@ -3065,7 +3065,7 @@ class MLEResults(tsbase.TimeSeriesModelResults):
             res.cov_kwds["description"] = descriptions["OPG"].format(
                 approx_type=approx_type_str
             )
-        elif self.cov_type == "robust" or self.cov_type == "robust_oim":
+        elif self.cov_type in ("robust", "robust_oim"):
             res.cov_params_default = res.cov_params_robust_oim
             res.cov_kwds["description"] = descriptions["robust-OIM"].format(
                 approx_type=approx_type_str
@@ -3730,7 +3730,7 @@ class MLEResults(tsbase.TimeSeriesModelResults):
                 " forecast errors have not been computed."
             )
 
-        if method == "ljungbox" or method == "boxpierce":
+        if method in ("ljungbox", "boxpierce"):
             from statsmodels.stats.diagnostic import acorr_ljungbox
 
             d = np.maximum(self.loglikelihood_burn, self.nobs_diffuse)
